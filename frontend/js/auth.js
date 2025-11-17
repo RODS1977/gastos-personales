@@ -7,17 +7,11 @@ async function handleLogin(e) {
     const password = document.getElementById('loginPassword').value;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        const response = await apiFetch('/auth/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                correo: email,
-                password: password
-            })
+            body: JSON.stringify({ correo: email, password: password })
         });
-        
+
         const data = await handleApiResponse(response);
         
         // Guardar datos de usuario
@@ -47,18 +41,11 @@ async function handleRegister(e) {
     const password = document.getElementById('registerPassword').value;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/registro`, {
+        const response = await apiFetch('/auth/registro', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nombre: name,
-                correo: email,
-                password: password
-            })
+            body: JSON.stringify({ nombre: name, correo: email, password: password })
         });
-        
+
         const data = await handleApiResponse(response);
         
         // Guardar datos y mostrar login

@@ -10,7 +10,22 @@ def obtener_categorias():
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("SELECT id, nombre, descripcion FROM categorias ORDER BY nombre")
-            categorias = cursor.fetchall()
+            rows = cursor.fetchall()
+            # Normalizar filas a objetos dict con claves conocidas
+            categorias = []
+            if rows:
+                # Si el cursor devuelve diccionarios (pymysql.DictCursor), las filas
+                # ya tendrán claves; si devuelve tuplas (mysql-connector), convertir
+                first = rows[0]
+                if isinstance(first, dict):
+                    categorias = rows
+                else:
+                    for r in rows:
+                        categorias.append({
+                            'id': r[0],
+                            'nombre': r[1],
+                            'descripcion': r[2]
+                        })
         
         return jsonify({
             'status': 'success',

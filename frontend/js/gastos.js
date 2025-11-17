@@ -1,7 +1,7 @@
 // Cargar categorías desde la API
 async function loadCategorias() {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/categorias`);
+        const response = await apiFetch('/api/categorias');
         const data = await handleApiResponse(response);
         categorias = data.data;
         
@@ -38,10 +38,7 @@ async function loadGastos() {
     showLoading(true);
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/gastos`, {
-            headers: getAuthHeaders()
-        });
-        
+        const response = await apiFetch('/api/gastos', { headers: getAuthHeaders() });
         const data = await handleApiResponse(response);
         gastos = data.data;
         
@@ -69,9 +66,8 @@ async function handleCreateGasto(e) {
     };
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/gastos`, {
+        const response = await apiFetch('/api/gastos', {
             method: 'POST',
-            headers: getAuthHeaders(),
             body: JSON.stringify(gastoData)
         });
         
@@ -105,9 +101,8 @@ async function handleUpdateGasto(e) {
     };
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/gastos/${gastoId}`, {
+        const response = await apiFetch(`/api/gastos/${gastoId}`, {
             method: 'PUT',
-            headers: getAuthHeaders(),
             body: JSON.stringify(gastoData)
         });
         
@@ -135,9 +130,8 @@ async function deleteGasto(gastoId) {
     showLoading(true);
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/gastos/${gastoId}`, {
-            method: 'DELETE',
-            headers: getAuthHeaders()
+        const response = await apiFetch(`/api/gastos/${gastoId}`, {
+            method: 'DELETE'
         });
         
         await handleApiResponse(response);

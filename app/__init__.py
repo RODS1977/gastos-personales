@@ -17,6 +17,27 @@ def create_app(config_name='default'):
     # Inicializar extensiones
     bcrypt.init_app(app)
     jwt.init_app(app)
+    # JWT error handlers: dev-friendly JSON responses for auth failures
+    @jwt.unauthorized_loader
+    def custom_unauthorized_response(err_msg):
+        from flask import jsonify
+        return jsonify({'status': 'error', 'message': err_msg}), 401
+
+    @jwt.invalid_token_loader
+    def custom_invalid_token_response(err_msg):
+        from flask import jsonify
+        # Invalid tokens often indicate malformed Authorization header
+        return jsonify({'status': 'error', 'message': err_msg}), 422
+
+    @jwt.expired_token_loader
+    def custom_expired_token_response(jwt_header, jwt_payload):
+        from flask import jsonify
+        return jsonify({'status': 'error', 'message': 'Token de acceso expirado'}), 401
+
+    @jwt.revoked_token_loader
+    def custom_revoked_token_response(jwt_header, jwt_payload):
+        from flask import jsonify
+        return jsonify({'status': 'error', 'message': 'Token revocado'}), 401
     
     # Registrar blueprints
     from app.routes.auth import auth_bp
