@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastos Personales - Control Financiero</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <i class="fas fa-wallet"></i>
+                Gastos Personales
+            </h1>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="userName"></span>
+                <button class="btn btn-outline" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sistema de Autenticación -->
+    <section id="authSection" class="auth-section">
+        <div class="container">
+            <div class="auth-container">
+                <!-- Login Form -->
+                <div class="auth-form" id="loginForm">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <label for="loginEmail">Correo Electrónico</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Contraseña</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                    </form>
+                    <p class="auth-switch">
+                        ¿No tienes cuenta? 
+                        <a href="#" onclick="showRegister()">Regístrate aquí</a>
+                    </p>
+                </div>
+
+                <!-- Register Form -->
+                <div class="auth-form" id="registerForm" style="display: none;">
+                    <h2>Crear Cuenta</h2>
+                    <form id="registerFormElement">
+                        <div class="form-group">
+                            <label for="registerName">Nombre Completo</label>
+                            <input type="text" id="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Correo Electrónico</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Contraseña</label>
+                            <input type="password" id="registerPassword" required>
+                            <small>Mínimo 6 caracteres, una mayúscula y un número</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+                    </form>
+                    <p class="auth-switch">
+                        ¿Ya tienes cuenta? 
+                        <a href="#" onclick="showLogin()">Inicia sesión aquí</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Principal (oculto inicialmente) -->
+    <section id="dashboard" class="dashboard" style="display: none;">
+        <div class="container">
+            <!-- Resumen Financiero -->
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Gastos del Mes</h3>
+                        <p id="totalGastosMes">$0.00</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Categorías Usadas</h3>
+                        <p id="totalCategorias">0</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Gastos</h3>
+                        <p id="totalGastos">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Gasto -->
+            <div class="card">
+                <h2>Agregar Nuevo Gasto</h2>
+                <form id="gastoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categoria">Categoría</label>
+                            <select id="categoria" required>
+                                <option value="">Selecciona una categoría</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="monto">Monto ($)</label>
+                            <input type="number" id="monto" step="0.01" min="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcion">Descripción</label>
+                            <input type="text" id="descripcion" placeholder="¿En qué gastaste?" maxlength="255">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Agregar Gasto
+                    </button>
+                </form>
+            </div>
+
+            <!-- Lista de Gastos -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Mis Gastos</h2>
+                    <div class="filters">
+                        <select id="filterCategoria">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                        <input type="month" id="filterMes">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="gastosTable">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Categoría</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gastosTableBody">
+                            <!-- Los gastos se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <h3>No hay gastos registrados</h3>
+                    <p>Comienza agregando tu primer gasto usando el formulario superior.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para Editar Gasto -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Gasto</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editGastoForm">
+                <input type="hidden" id="editGastoId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCategoria">Categoría</label>
+                        <select id="editCategoria" required>
+                            <option value="">Selecciona una categoría</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMonto">Monto ($)</label>
+                        <input type="number" id="editMonto" step="0.01" min="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFecha">Fecha</label>
+                        <input type="date" id="editFecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescripcion">Descripción</label>
+                        <input type="text" id="editDescripcion" maxlength="255">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Actualizar Gasto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification" class="notification"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/gastos.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
